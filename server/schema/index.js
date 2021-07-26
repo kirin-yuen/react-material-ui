@@ -7,22 +7,63 @@ const {
   GraphQLID,
   GraphQLInt,
   GraphQLList,
+  GraphQLNonNull,
 } = graphql;
 
 // dummy data
-var books = [
-  { name: "Name of the Wind", genre: "Fantasy", id: "1", authorId: "1" },
-  { name: "The Final Empire", genre: "Fantasy", id: "2", authorId: "2" },
-  { name: "The Long Earth", genre: "Sci-Fi", id: "3", authorId: "3" },
-  { name: "The Hero of Ages", genre: "Fantasy", id: "4", authorId: "2" },
-  { name: "The Colour of Magic", genre: "Fantasy", id: "5", authorId: "3" },
-  { name: "The Light Fantastic", genre: "Fantasy", id: "6", authorId: "3" },
+var books = [{
+    name: "Name of the Wind",
+    genre: "Fantasy",
+    id: "1",
+    authorId: "1"
+  },
+  {
+    name: "The Final Empire",
+    genre: "Fantasy",
+    id: "2",
+    authorId: "2"
+  },
+  {
+    name: "The Long Earth",
+    genre: "Sci-Fi",
+    id: "3",
+    authorId: "3"
+  },
+  {
+    name: "The Hero of Ages",
+    genre: "Fantasy",
+    id: "4",
+    authorId: "2"
+  },
+  {
+    name: "The Colour of Magic",
+    genre: "Fantasy",
+    id: "5",
+    authorId: "3"
+  },
+  {
+    name: "The Light Fantastic",
+    genre: "Fantasy",
+    id: "6",
+    authorId: "3"
+  },
 ];
 
-var authors = [
-  { name: "Patrick Rothfuss", age: 44, id: "1" },
-  { name: "Brandon Sanderson", age: 42, id: "2" },
-  { name: "Terry Pratchett", age: 66, id: "3" },
+var authors = [{
+    name: "Patrick Rothfuss",
+    age: 44,
+    id: "1"
+  },
+  {
+    name: "Brandon Sanderson",
+    age: 42,
+    id: "2"
+  },
+  {
+    name: "Terry Pratchett",
+    age: 66,
+    id: "3"
+  },
 ];
 
 const BookType = new GraphQLObjectType({
@@ -99,6 +140,60 @@ const RootQuery = new GraphQLObjectType({
   }),
 });
 
+const getCurrentMaxId = (arr) => Math.max(...arr.map(item => item.id))
+
+// 操作数据部分
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    addAuthor: {
+      type: AuthorType,
+      args: {
+        name: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        age: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
+      resolve: (parent, args) => {
+        let author = {
+          name: args.name,
+          age: args.age,
+          id: String(getCurrentMaxId(authors) + 1)
+        };
+        authors.push(author)
+        return author
+      }
+    },
+    addBook: {
+      type: BookType,
+      args: {
+        name: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        genre: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        authorId: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve: (parent, args) => {
+        let book = {
+          name: args.name,
+          genre: args.genre,
+          id: String(getCurrentMaxId(books) + 1),
+          authorId: args.authorId,
+        };
+        books.push(book)
+        return book
+      }
+    },
+  }
+})
+
 module.exports = new GraphQLSchema({
   query: RootQuery,
+  mutation: Mutation
 });
