@@ -1,13 +1,15 @@
-import { getBooks } from "ApolloClient/graphql/books";
+import { getBooksGql } from "ApolloClient/graphql/books";
 import React, { useState } from "react";
 import BookDetail from "components/BookDetail/index";
+import { useQuery } from "@apollo/client";
 
-export default getBooks()(({ data: { loading, books } }) => {
+export default () => {
   const [selected, setSelected] = useState(null);
-  
+  const { loading, error, data } = useQuery(getBooksGql);
+
   const renderBooks = () =>
     !loading &&
-    books.map(({ id, name }) => (
+    data.books.map(({ id, name }) => (
       <li key={id} onClick={() => setSelected(id)}>
         {name}
       </li>
@@ -19,4 +21,4 @@ export default getBooks()(({ data: { loading, books } }) => {
       <BookDetail selectBookId={selected} />
     </div>
   );
-});
+};

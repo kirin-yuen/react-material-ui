@@ -1,9 +1,16 @@
+/*
+ * @Author: ywl
+ * @LastEditors: ywl
+ */
+// import {
+//     gql
+// } from "apollo-boost";
+// import {
+//     graphql
+// } from "react-apollo"
 import {
     gql
-} from "apollo-boost";
-import {
-    graphql
-} from "react-apollo"
+} from "@apollo/client";
 
 const queryAuthorsGql = gql `
     {
@@ -13,9 +20,7 @@ const queryAuthorsGql = gql `
         }
     }
 `;
-const queryAuthors = (params) => graphql(queryAuthorsGql, params)
-
 
 export {
-    queryAuthors,
+    queryAuthorsGql,
 }

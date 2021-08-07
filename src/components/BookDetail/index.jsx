@@ -1,12 +1,17 @@
-import { getBookDetail } from "ApolloClient/graphql/books";
+import { getBookDetailGql } from "ApolloClient/graphql/books";
 import React from "react";
+import { useQuery } from "@apollo/client";
 
-function BookDetail(props) {
-  const {
-    data: { book },
-  } = props;
-  
+export default function BookDetail(props) {
+  const { loading, error, data } = useQuery(getBookDetailGql, {
+    variables: {
+      id: props.selectBookId,
+    },
+  });
+
   const displayBookDetails = () => {
+    const book = !loading && data.book;
+    
     if (book) {
       return (
         <div>
@@ -28,12 +33,3 @@ function BookDetail(props) {
 
   return <div id="book-details">{displayBookDetails()}</div>;
 }
-
-export default getBookDetail({
-  // props 变化 则会重新执行 graphql，然后给查询赋参数，并将查询数据返回给 props
-  options: (props) => ({
-    variables: {
-      id: props.selectBookId,
-    },
-  }),
-})(BookDetail);

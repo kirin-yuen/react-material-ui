@@ -2,12 +2,15 @@
  * @Author: ywl
  * @LastEditors: ywl
  */
+// import {
+//     gql
+// } from "apollo-boost";
+// import {
+//     graphql
+// } from "react-apollo";
 import {
     gql
-} from "apollo-boost";
-import {
-    graphql
-} from "react-apollo";
+} from "@apollo/client";
 
 const getBooksGql = gql `
 {
@@ -17,8 +20,6 @@ const getBooksGql = gql `
     }
 }
 `;
-const getBooks = (params) => graphql(getBooksGql, params)
-
 
 // ! 代表不能为空
 const addBookGql = gql `
@@ -29,8 +30,6 @@ mutation($name: String!, $genre: String!, $authorId: ID!){
     }
 }
 `;
-const addBook = (params) => graphql(addBookGql, params)
-
 
 const getBookDetailGql = gql `
     query($id: ID){
@@ -51,12 +50,9 @@ const getBookDetailGql = gql `
         }
     }
 `
-const getBookDetail = (params) => graphql(getBookDetailGql, params)
 
 export {
+    addBookGql,
     getBooksGql,
     getBookDetailGql,
-    getBooks,
-    addBook,
-    getBookDetail
 }
