@@ -2,16 +2,17 @@ import Masonry from "react-masonry-css";
 import { Container } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import NoteCard from "../components/NoteCard";
+import AppDialog from "../components/AppDialog";
 const URI = "http://localhost:9999/notes";
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
-  const [updateCount, forceUpdate] = useState({});
   // 模拟 forceUpdate
+  const [updateCount, forceUpdate] = useState({});
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState(null);
 
-  console.log("Home render================");
-
-  const handleRemove = (id) => {
+  const onConfirmRemove = (id) => {
     fetch(`${URI}/${id}`, {
       method: "delete",
     })
@@ -27,6 +28,11 @@ export default function Home() {
         }
       })
       .catch((error) => console.error(error));
+  };
+
+  const handleRemove = (id) => {
+    setOpen(true);
+    setId(id);
   };
 
   // componentDidMount & componentDidUpdate
@@ -54,6 +60,7 @@ export default function Home() {
             <NoteCard note={note} remove={handleRemove}></NoteCard>
           </div>
         ))}
+        <AppDialog id={id} open={open} setOpen={setOpen} onConfirm={onConfirmRemove} />
       </Masonry>
     </Container>
   );
